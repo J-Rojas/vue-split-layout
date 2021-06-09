@@ -36,7 +36,8 @@ export default Vue.component('Layout', {
   props: {
     'edit': {type: Boolean, default: true},
     'resize': {type: Boolean, default: true},
-    'splits': {type: [String, Number, Object], default: () => ({})}
+    'splits': {type: [String, Number, Object], default: () => ({})},
+    'type': {type: [Object, Function], default: null }
   },
   data () {
     return {
@@ -249,10 +250,19 @@ export default Vue.component('Layout', {
             </Split>
           )
         default:
-          if (this.edit) {
-            return (<div class={'view'} node-id={node.id} target-view={'view-' + node.viewId} onmousedown={onMouseDown}></div>)
+          if (this.type) {
+            const Component = this.type
+            return (<Component               
+              class={'view'} 
+              id={node.viewId} 
+              targetView={'view-' + node.viewId} 
+              onmousedown={onMouseDown} />)
+          } else {        
+            if (this.edit) {
+              return (<div class={'view'} node-id={node.id} target-view={'view-' + node.viewId} onmousedown={onMouseDown}></div>)
+            }
+            return (<div class={'view'} node-id={node.id} target-view={'view-' + node.viewId}></div>)          
           }
-          return (<div class={'view'} node-id={node.id} target-view={'view-' + node.viewId}></div>)
       }
     }
     const tree = walk(this.state.nodes[0])
